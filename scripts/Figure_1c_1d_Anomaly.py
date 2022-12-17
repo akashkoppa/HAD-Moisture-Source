@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
--------------------------------------------------------------------------------
-Figure 1: Study Area
--------------------------------------------------------------------------------
 Author: Akash Koppa
-Date: 2022-02-02
 
 """
 #%% load required libraries
@@ -133,27 +129,6 @@ sr_acp_reg = regressor3.fit(pre_sr_annual.index[(pt_sr.cp):(pre_sr_annual.size)]
                           pre_sr_annual.iloc[(pt_sr.cp):(pre_sr_annual.size)].values.reshape(-1, 1))
 sr_acp_reg_pred = sr_acp_reg.predict(pre_sr_annual.index[(pt_sr.cp):(pre_sr_annual.size)].values.reshape(-1, 1))
 
-#%% using stats models for p-values
-#lr_bcp_reg_statsmodel = sm.OLS(pre_lr_annual.iloc[0:(pt_lr.cp)].values.reshape(-1, 1),
-#                               pre_lr_annual.index[0:(pt_lr.cp)].values.reshape(-1, 1))
-#lr_bcp_fit_statsmodel = lr_bcp_reg_statsmodel.fit()
-#lr_bcp_reg_pred = lr_bcp_fit_statsmodel.predict(pre_lr_annual.index[0:(pt_lr.cp)].values.reshape(-1, 1))
-
-#lr_acp_reg_statsmodel = sm.OLS(pre_lr_annual.iloc[(pt_lr.cp):(pre_lr_annual.size)].values.reshape(-1, 1),
-#                               pre_lr_annual.index[(pt_lr.cp):(pre_lr_annual.size)].values.reshape(-1, 1))
-#lr_acp_fit_statsmodel = lr_acp_reg_statsmodel.fit()
-#lr_acp_reg_pred = lr_acp_fit_statsmodel.predict(pre_lr_annual.index[(pt_lr.cp):(pre_lr_annual.size)].values.reshape(-1, 1))
-
-#sr_bcp_reg_statsmodel = sm.OLS(pre_sr_annual.iloc[0:(pt_sr.cp)].values.reshape(-1, 1),
-#                               pre_sr_annual.index[0:(pt_sr.cp)].values.reshape(-1, 1))
-#sr_bcp_fit_statsmodel = sr_bcp_reg_statsmodel.fit()
-#sr_bcp_reg_pred = sr_bcp_fit_statsmodel.predict(pre_lr_annual.index[0:(pt_sr.cp+1)].values.reshape(-1, 1))
-
-#sr_acp_reg_statsmodel = sm.OLS(pre_sr_annual.iloc[(pt_sr.cp):(pre_sr_annual.size)].values.reshape(-1, 1),
-#                               pre_sr_annual.index[(pt_sr.cp):(pre_sr_annual.size)].values.reshape(-1, 1))
-#sr_acp_fit_statsmodel = sr_acp_reg_statsmodel.fit()
-#sr_acp_reg_pred = sr_acp_fit_statsmodel.predict(pre_sr_annual.index[(pt_sr.cp):(pre_sr_annual.size)].values.reshape(-1, 1))
-
 #%% pingouin
 lr_bcp_reg_pingouin = pg.linear_regression(np.array(pre_lr_annual.index[0:(pt_lr.cp)].values.reshape(-1, 1)).flatten(),
                                            np.array(pre_lr_annual.iloc[0:(pt_lr.cp)].values.reshape(-1, 1)).flatten())
@@ -171,7 +146,6 @@ sr_acp_reg_pingouin = pg.linear_regression(np.array(pre_sr_annual.index[(pt_sr.c
 lr_reg_pred_all = pd.Series(np.append(lr_bcp_reg_pred, lr_acp_reg_pred), index = pre_lr_annual.index)
 lr_reg_pred_all.iloc[pt_lr.cp-1] = np.nan
 lr_reg_pred_all.name = "Mean"
-#sr_reg_pred_all = pd.Series(np.append(sr_bcp_reg_pred, sr_acp_reg_pred), index = pre_sr_annual.index)
 sr_reg_pred_all = pd.Series(np.append(sr_bcp_reg_pred, sr_acp_reg_pred), index = pre_lr_annual.index)
 sr_reg_pred_all.iloc[pt_sr.cp] = np.nan
 sr_reg_pred_all.name = "Mean"
@@ -194,15 +168,6 @@ cmap_2 = mp.colors.ListedColormap(pl.scientific.diverging.Vik_10.mpl_colors, N =
 pre_lr = pd.concat([pre_mar_anm, pre_apr_anm, pre_may_anm], axis = 1)
 figure = mp.pyplot.figure(figsize = (9,4.5))
 figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
-#pre_lr.rolling(5).mean().loc[range(1987, 2016)].plot.bar(ax = figaxi, stacked = True, 
-#                color = [cmap(1), cmap(4), cmap(7)])
-#pre_lr_annual.rolling(5).mean().loc[range(1987, 2016)].plot(ax =figaxi, color = [cmap_1(2)], 
-#                   style = ['o-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
 pre_lr.plot.bar(ax = figaxi, stacked = True, 
                 color = [cmap(4), cmap(6), cmap(8)],
                 edgecolor = "black",
@@ -222,12 +187,8 @@ mp.pyplot.axhline(y=0.0, color='black', linestyle='-', linewidth = 0.75)
 mp.pyplot.axvline(x=18, color='black', linestyle='--', linewidth = 0.75)
 figaxi.set_xlabel("Year")
 figaxi.set_ylabel("Precipitation Anomaly (mm)")
-#figaxi.text(5.15,-88, r'y = 0.22x - 423.57', fontsize = 10)
-#figaxi.text(23.75,-88, r'y = 1.80x - 3649.73', fontsize = 10)
 mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
 figaxi.set_xticklabels(pre_lr.loc[range(1980, 2017)].index, rotation = 90)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
 mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures_v3/Figure_2_Anomaly_LR.png",
                   bbox_inches = "tight",
                   pad_inches = 0.05,
@@ -237,15 +198,6 @@ mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures_v3/Figure_2_Anomaly_L
 pre_sr = pd.concat([pre_oct_anm, pre_nov_anm, pre_dec_anm], axis = 1)
 figure = mp.pyplot.figure(figsize = (9,4.5))
 figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
-#pre_sr.rolling(5).mean().loc[range(1987, 2016)].plot.bar(ax = figaxi, stacked = True, 
-#                color = [cmap(1), cmap(4), cmap(7)])
-#pre_sr_annual.rolling(5).mean().loc[range(1987, 2016)].plot(ax =figaxi, color = [cmap_1(7)], 
-#                   style = ['x-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
 pre_sr.plot.bar(ax = figaxi, stacked = True, 
                 color = [cmap(4), cmap(6), cmap(8)],
                 edgecolor = "black",
@@ -269,8 +221,6 @@ figaxi.text(5.15,-88, r'y = 1.77x - 3550.91', fontsize = 10)
 figaxi.text(21.05,-88, r'y = -0.62x - 1278.03', fontsize = 10)
 mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
 figaxi.set_xticklabels(pre_lr.rolling(5).mean().loc[range(1980, 2017)].index, rotation = 90)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
 mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures_v3/Figure_2_Anomaly_SR.png",
                   bbox_inches = "tight",
                   pad_inches = 0.05,

@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
--------------------------------------------------------------------------------
-Table 1: Recycling Ratio and Contribution Percentages
--------------------------------------------------------------------------------
 Author: Akash Koppa
-Date: 2022-02-02
 
 """
 #%% import required libraries
@@ -49,27 +45,21 @@ ondhoa = ondhoa.groupby(ondhoa.index.year).mean()
 
 # March 
 marhoa = hoarer.loc[(hoarer.index.month == 3)]
-#marhoa = marhoa.mean()
 
 # April
 aprhoa = hoarer.loc[(hoarer.index.month == 4)]
-#aprhoa = aprhoa.mean()
 
 # May
 mayhoa = hoarer.loc[(hoarer.index.month == 5)]
-#mayhoa = mayhoa.mean()
 
 # October
 octhoa = hoarer.loc[(hoarer.index.month == 10)]
-#octhoa = octhoa.mean()
 
 # November
 novhoa = hoarer.loc[(hoarer.index.month == 11)]
-#novhoa = novhoa.mean()
 
 # December
 dechoa = hoarer.loc[(hoarer.index.month == 12)]
-#dechoa = dechoa.mean()
 
 #%% Ocean Contribution
 ## horn of africa drylands
@@ -88,27 +78,21 @@ ondhoa_ocn = ondhoa_ocn.groupby(ondhoa_ocn.index.year).mean()
 
 # March 
 marhoa_ocn = hoaocn.loc[(hoaocn.index.month == 3)]
-#marhoa_ocn = marhoa_ocn.mean()
 
 # April 
 aprhoa_ocn = hoaocn.loc[(hoaocn.index.month == 4)]
-#aprhoa_ocn = aprhoa_ocn.mean()
 
 # May
 mayhoa_ocn = hoaocn.loc[(hoaocn.index.month == 5)]
-#mayhoa_ocn = mayhoa_ocn.mean()
 
 # October
 octhoa_ocn = hoaocn.loc[(hoaocn.index.month == 10)]
-#octhoa_ocn = octhoa_ocn.mean()
 
 # November
 novhoa_ocn = hoaocn.loc[(hoaocn.index.month == 11)]
-#novhoa_ocn = novhoa_ocn.mean()
 
 # December
 dechoa_ocn = hoaocn.loc[(hoaocn.index.month == 12)]
-#dechoa_ocn = dechoa_ocn.mean()
 
 #%% MAM 
 mamall = pd.concat([mamhoa, 100-(mamhoa + mamhoa_ocn), mamhoa_ocn], axis = 1)
@@ -156,13 +140,11 @@ ds = xr.open_mfdataset(os.path.join(flxfil, "*.nc"), chunks = {"lat": 50, "lon":
 maskfi = "/Stor1/horn_of_africa/input/study_region_masks/mask_hoa.nc"
 maskda = xr.open_dataset(maskfi)
 maskda = maskda["mask"]
-#maskda = maskda.rio.set_crs(4326)
 
 #%% calculate precipitation totals 
 # long rain
 pre_month = ds["E2P_EPs"].resample(time = "1M").sum()
 pre_lr = pre_month.sel(time = pre_month.time.dt.month.isin([3,4,5]))
-#pre_clim = ds["E2P_EPs"].groupby("time.month").mean()
 pre_lr.compute()
 pre_lr_annual = pre_lr.groupby("time.year").sum()
 pre_lr_annual = pre_lr_annual.sum(dim = ["lat","lon"]).to_pandas()
@@ -170,7 +152,6 @@ pre_lr_annual = pre_lr_annual/np.array(maskda.where(maskda == 1).count())
 
 #%% short rain
 pre_sr = pre_month.sel(time = pre_month.time.dt.month.isin([10,11,12]))
-#pre_clim = ds["E2P_EPs"].groupby("time.month").mean()
 pre_sr.compute()
 pre_sr_annual = pre_sr.groupby("time.year").sum()
 pre_sr_annual = pre_sr_annual.sum(dim = ["lat","lon"]).to_pandas()
@@ -250,8 +231,6 @@ dec_con.columns = decall.keys()
 
 #%% plot the figure
 # get required number of colors
-#cmap = mp.colors.ListedColormap(pl.scientific.sequential.GrayC_10_r.mpl_colors, N = 10)
-#cmap_1 = mp.colors.ListedColormap(pl.scientific.diverging.Vik_10.mpl_colors, N = 10)
 cmap = mp.colors.ListedColormap(pl.scientific.sequential.Bilbao_10.mpl_colors, N = 10)
 cmap_1 = mp.colors.ListedColormap(pl.scientific.sequential.Oslo_10.mpl_colors, N = 10)
 
@@ -259,24 +238,15 @@ cmap_1 = mp.colors.ListedColormap(pl.scientific.sequential.Oslo_10.mpl_colors, N
 # Long Rains
 figure = mp.pyplot.figure(figsize = (9,3.5))
 figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
 mam_con.plot.bar(ax = figaxi, stacked = True, 
                 color = [cmap(4), cmap(5), cmap_1(6)],
                 edgecolor = "black",
                 linewidth = 0.3)
-#pre_mar.plot(ax =figaxi, color = [cmap_1(2)], 
-#                   style = ['o-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
 figaxi.set_xlabel("Month")
 figaxi.set_ylabel("Precipitation (mm)")
 mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
 figaxi.set_xticklabels(mam_con.index, rotation = 90)
 mp.pyplot.axvline(x=18, color='black', linestyle='--', linewidth = 0.75)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
 mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures_v2/Figure_4_Time_Series_LR.png",
                   bbox_inches = "tight",
                   pad_inches = 0.05,
@@ -285,192 +255,19 @@ mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures_v2/Figure_4_Time_Seri
 #%% Short Rains
 figure = mp.pyplot.figure(figsize = (9,3.5))
 figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
 ond_con.plot.bar(ax = figaxi, stacked = True, 
                 color = [cmap(4), cmap(5), cmap_1(6)],
                 edgecolor = "black",
                 linewidth = 0.3)
-#pre_mar.plot(ax =figaxi, color = [cmap_1(2)], 
-#                   style = ['o-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
 figaxi.set_xlabel("Month")
 figaxi.set_ylabel("Precipitation (mm)")
 mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
 figaxi.set_xticklabels(mam_con.index, rotation = 90)
 mp.pyplot.axvline(x=21, color='black', linestyle='--', linewidth = 0.75)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
 mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures_v2/Figure_4_Time_Series_SR.png",
                   bbox_inches = "tight",
                   pad_inches = 0.05,
                   dpi = 600)
-
-"""
-#%% calculate the trends in contributions
-#%% long rains
-mam_reg_local = pg.linear_regression(np.array(mam_con["Local Recycling"].values.reshape(-1, 1)).flatten(),
-                                     np.array(mam_con.index.values.reshape(-1,1)).flatten())
-mam_reg_ext = pg.linear_regression(np.array(mam_con["External Land"].values.reshape(-1, 1)).flatten(),
-                                     np.array(mam_con.index.values.reshape(-1,1)).flatten())
-mam_reg_ocn = pg.linear_regression(np.array(mam_con["Ocean"].values.reshape(-1, 1)).flatten(),
-                                     np.array(mam_con.index.values.reshape(-1,1)).flatten())
-
-#%% short rains
-ond_con = ond_con.drop(1997)
-ondall = ondall.drop(1997)
-#%%
-ond_reg_local = pg.linear_regression(np.array(ond_con["Local Recycling"].values.reshape(-1, 1)).flatten(),
-                                     np.array(ond_con.index.values.reshape(-1,1)).flatten())
-ond_reg_ext = pg.linear_regression(np.array(ond_con["External Land"].values.reshape(-1, 1)).flatten(),
-                                     np.array(ond_con.index.values.reshape(-1,1)).flatten())
-ond_reg_ocn = pg.linear_regression(np.array(ond_con["Ocean"].values.reshape(-1, 1)).flatten(),
-                                     np.array(ond_con.index.values.reshape(-1,1)).flatten())
-#%% Draw two horizontal bar plots showing the percentage contribution
-"""
-"""
-#%% plot the contributions
-# March
-figure = mp.pyplot.figure(figsize = (9,3.5))
-figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
-mar_con.plot.bar(ax = figaxi, stacked = True, 
-                color = [cmap(1), cmap(4), cmap(7)])
-#pre_mar.plot(ax =figaxi, color = [cmap_1(2)], 
-#                   style = ['o-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
-figaxi.set_xlabel("Month")
-figaxi.set_ylabel("Precipitation (mm/month)")
-mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
-figaxi.set_xticklabels(mar_con.index, rotation = 90)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
-mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures/Figure_4_Time_Series_Mar.png",
-                  bbox_inches = "tight",
-                  pad_inches = 0.05,
-                  dpi = 600)
-
-# April
-figure = mp.pyplot.figure(figsize = (9,3.5))
-figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
-apr_con.plot.bar(ax = figaxi, stacked = True, 
-                color = [cmap(1), cmap(4), cmap(7)])
-#pre_mar.plot(ax =figaxi, color = [cmap_1(2)], 
-#                   style = ['o-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
-figaxi.set_xlabel("Month")
-figaxi.set_ylabel("Precipitation (mm/month)")
-mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
-figaxi.set_xticklabels(apr_con.index, rotation = 90)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
-mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures/Figure_4_Time_Series_Apr.png",
-                  bbox_inches = "tight",
-                  pad_inches = 0.05,
-                  dpi = 600)
-
-# May
-figure = mp.pyplot.figure(figsize = (9,3.5))
-figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
-may_con.plot.bar(ax = figaxi, stacked = True, 
-                color = [cmap(1), cmap(4), cmap(7)])
-#pre_mar.plot(ax =figaxi, color = [cmap_1(2)], 
-#                   style = ['o-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
-figaxi.set_xlabel("Month")
-figaxi.set_ylabel("Precipitation (mm/month)")
-mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
-figaxi.set_xticklabels(may_con.index, rotation = 90)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
-mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures/Figure_4_Time_Series_May.png",
-                  bbox_inches = "tight",
-                  pad_inches = 0.05,
-                  dpi = 600)
-
-# October
-figure = mp.pyplot.figure(figsize = (9,3.5))
-figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
-oct_con.plot.bar(ax = figaxi, stacked = True, 
-                color = [cmap(1), cmap(4), cmap(7)])
-#pre_mar.plot(ax =figaxi, color = [cmap_1(2)], 
-#                   style = ['o-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
-figaxi.set_xlabel("Month")
-figaxi.set_ylabel("Precipitation (mm/month)")
-mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
-figaxi.set_xticklabels(oct_con.index, rotation = 90)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
-mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures/Figure_4_Time_Series_Oct.png",
-                  bbox_inches = "tight",
-                  pad_inches = 0.05,
-                  dpi = 600)
-
-# November
-figure = mp.pyplot.figure(figsize = (9,3.5))
-figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
-nov_con.plot.bar(ax = figaxi, stacked = True, 
-                color = [cmap(1), cmap(4), cmap(7)])
-#pre_mar.plot(ax =figaxi, color = [cmap_1(2)], 
-#                   style = ['o-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
-figaxi.set_xlabel("Month")
-figaxi.set_ylabel("Precipitation (mm/month)")
-mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
-figaxi.set_xticklabels(nov_con.index, rotation = 90)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
-mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures/Figure_4_Time_Series_Nov.png",
-                  bbox_inches = "tight",
-                  pad_inches = 0.05,
-                  dpi = 600)
-
-# December
-figure = mp.pyplot.figure(figsize = (9,3.5))
-figaxi = figure.add_subplot(1, 1, 1)
-#pre_lr.plot(ax = figaxi, color = [cmap(1), cmap(2), cmap(3)], 
-#            style = ['^-','<-', 'v-'])
-dec_con.plot.bar(ax = figaxi, stacked = True, 
-                color = [cmap(1), cmap(4), cmap(7)])
-#pre_mar.plot(ax =figaxi, color = [cmap_1(2)], 
-#                   style = ['o-'],
-#                   secondary_y = False, 
-#                   use_index = False, 
-#                   mark_right = False)
-figaxi.set_xlabel("Month")
-figaxi.set_ylabel("Precipitation (mm/month)")
-mp.pyplot.legend(ncol = 2, edgecolor = "black", loc = "upper right")
-figaxi.set_xticklabels(dec_con.index, rotation = 90)
-#figaxi.legend().get_frame().set_edgecolor("black")
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
-mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures/Figure_4_Time_Series_Dec.png",
-                  bbox_inches = "tight",
-                  pad_inches = 0.05,
-                  dpi = 600)
-
-"""
 
 
 

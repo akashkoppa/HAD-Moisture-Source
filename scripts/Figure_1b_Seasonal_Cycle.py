@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
--------------------------------------------------------------------------------
-Figure 1: Study Area
--------------------------------------------------------------------------------
 Author: Akash Koppa
-Date: 2022-02-02
 
 """
 #%% load required libraries
@@ -82,16 +78,12 @@ pre_clim_final.plot.bar(ax = figaxi, y = "P", color = colors, stacked = True,
 bars = figaxi.patches
 for bar, hatch in zip(bars, hatches):
     bar.set_hatch(hatch)
-    #bar.set_edgecolor("grey")
 figaxi.set_xlabel("Month", family = "Arial")
 figaxi.set_ylabel("Precipitation (mm)")
 figaxi.errorbar(pre_clim_final.index, pre_clim_final["P"], 
                 yerr = pre_clim_final["SD"],
                 linewidth = 1.5, fmt = " ", color = "black", capsize = 4)
 figaxi.get_legend().remove()
-#figaxi.text(5.15,-88, r'y = 0.22x - 423.57', fontsize = 10)
-#figaxi.text(23.75,-88, r'y = 1.80x - 3649.73', fontsize = 10)
-#figaxi.right_ax.set_ylabel("Max Temperature (deg C)")
 mp.pyplot.savefig("/Stor1/horn_of_africa/hoa_paper/figures_v3/Figure_1_Seasonal_Cycle.png",
                   bbox_inches = "tight",
                   pad_inches = 0.05,

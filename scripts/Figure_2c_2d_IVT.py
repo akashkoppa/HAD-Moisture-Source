@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
--------------------------------------------------------------------------------
-Figure 1: Study Area
--------------------------------------------------------------------------------
 Author: Akash Koppa
-Date: 2022-02-02
 
 """
 #%% load required libraries
@@ -47,7 +43,6 @@ lat_req = np.array(ds_uv.lat)
 lat_req = lat_req[lat_req >= -35]
 lat_req = lat_req[lat_req <= 35]
 ds_uv = ds_uv.sel(lat = lat_req)
-#ds_uv = ds_uv.isel(lon = np.arange(0, 360, 3), lat = np.arange(0, 71, 3))
 
 #%% resample the arrows
 ds_uv_res = ds_uv.isel(lon = np.arange(0, 360, 3), lat = np.arange(0, 71, 3))
@@ -56,12 +51,8 @@ ds_uv_res = ds_uv.isel(lon = np.arange(0, 360, 3), lat = np.arange(0, 71, 3))
 figure = mp.pyplot.figure(figsize = (6,6))
 figaxi = figure.add_subplot(1, 1, 1, 
                             projection = ca.crs.Geostationary(central_longitude = 48))
-                            #projection = ca.crs.Mercator())
 figaxi.set_global()
-#figaxi.set_extent([-120, 150, -36, 36])
-#figaxi.stock_img()
 figaxi.add_feature(ca.feature.LAND, edgecolor='black', alpha = 0.2, zorder =4)
-#figaxi.add_feature(ca.feature.NaturalEarthFeature('physical', 'land', scale='50m'))
 figaxi.add_feature(ca.feature.OCEAN, zorder = 0)
 figaxi.coastlines(zorder = 4)
 figaxi.add_feature(ca.feature.BORDERS, zorder = 4, linestyle = "--", color = "black",
@@ -87,9 +78,7 @@ quiver = ds_uv_res.plot.quiver(ax = figaxi,
                      transform = ca.crs.PlateCarree(),
                      alpha = 0.7,
                      scale = 40, zorder = 6)
-#mp.pyplot.quiverkey(quiver, 0.1, 0.1, 15.0, '15.0 kg.m/s' ,labelpos = 'S')
 
-#figure.patch.set_alpha(0)
 mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2", 
                                "Figure_3_IVT_LR.png"), 
                   bbox_inches = "tight",

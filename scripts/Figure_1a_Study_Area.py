@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
--------------------------------------------------------------------------------
-Figure 1: Study Area
--------------------------------------------------------------------------------
 Author: Akash Koppa
-Date: 2022-02-02
 
 """
 #%% load required libraries
@@ -26,10 +22,7 @@ figure = mp.pyplot.figure(figsize = (6,6))
 figaxi = figure.add_subplot(1, 1, 1, 
                             projection = ca.crs.Geostationary(central_longitude = 48))
 figaxi.set_global()
-#figaxi.set_extent(-60, 60, -)
-#figaxi.stock_img()
 figaxi.add_feature(ca.feature.LAND, edgecolor='black', alpha = 1.0, zorder =1)
-#figaxi.add_feature(ca.feature.NaturalEarthFeature('physical', 'land', scale='50m'))
 figaxi.add_feature(ca.feature.OCEAN, zorder = 0)
 figaxi.coastlines(zorder = 2)
 figaxi.add_feature(ca.feature.BORDERS, zorder = 1, linestyle = "--", color = "black",

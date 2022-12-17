@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
--------------------------------------------------------------------------------
-Figure 1: Study Area
--------------------------------------------------------------------------------
 Author: Akash Koppa
-Date: 2022-02-02
 
 """
 #%% load required libraries
@@ -79,8 +75,6 @@ pre_lr = pre_lr.mean(dim = ["year"])
 # March
 pre_mar = pre_month.sel(time = pre_month.time.dt.month.isin([3]))
 pre_mar = pre_mar.mean(dim = ["time"])
-#pre_mar = pre_mar.groupby("time.year").sum(dim = ["lat", "lon"]).to_pandas()
-#pre_mar = pre_mar/np.array(maskda.where(maskda == 1).count())
 
 # April
 pre_apr = pre_month.sel(time = pre_month.time.dt.month.isin([4]))
@@ -96,7 +90,6 @@ ds_uv_mar = ds_uv.sel(time = ds_uv.time.dt.month.isin([3]))
 ds_uv_mar.compute()
 ds_uv_mar = ds_uv_mar.groupby("time.year").mean()
 ds_uv_mar = ds_uv_mar.mean(dim = ["year"])
-#ds_uv_lr = xr.where(pre_lr < 0.5, np.nan, ds_uv_lr)
 # resample to have less number of arrows
 lat_req = np.array(ds_uv_mar.lat)
 lat_req = lat_req[lat_req >= -35]
@@ -110,7 +103,6 @@ ds_uv_apr = ds_uv.sel(time = ds_uv.time.dt.month.isin([4]))
 ds_uv_apr.compute()
 ds_uv_apr = ds_uv_apr.groupby("time.year").mean()
 ds_uv_apr = ds_uv_apr.mean(dim = ["year"])
-#ds_uv_lr = xr.where(pre_lr < 0.5, np.nan, ds_uv_lr)
 # resample to have less number of arrows
 lat_req = np.array(ds_uv_apr.lat)
 lat_req = lat_req[lat_req >= -35]
@@ -124,7 +116,6 @@ ds_uv_may = ds_uv.sel(time = ds_uv.time.dt.month.isin([5]))
 ds_uv_may.compute()
 ds_uv_may = ds_uv_may.groupby("time.year").mean()
 ds_uv_may = ds_uv_may.mean(dim = ["year"])
-#ds_uv_lr = xr.where(pre_lr < 0.5, np.nan, ds_uv_lr)
 # resample to have less number of arrows
 lat_req = np.array(ds_uv_may.lat)
 lat_req = lat_req[lat_req >= -35]
@@ -155,7 +146,6 @@ ds_uv_oct = ds_uv.sel(time = ds_uv.time.dt.month.isin([10]))
 ds_uv_oct.compute()
 ds_uv_oct = ds_uv_oct.groupby("time.year").mean()
 ds_uv_oct = ds_uv_oct.mean(dim = ["year"])
-#ds_uv_lr = xr.where(pre_lr < 0.5, np.nan, ds_uv_lr)
 # resample to have less number of arrows
 lat_req = np.array(ds_uv_oct.lat)
 lat_req = lat_req[lat_req >= -35]
@@ -169,7 +159,6 @@ ds_uv_nov = ds_uv.sel(time = ds_uv.time.dt.month.isin([11]))
 ds_uv_nov.compute()
 ds_uv_nov = ds_uv_nov.groupby("time.year").mean()
 ds_uv_nov = ds_uv_nov.mean(dim = ["year"])
-#ds_uv_lr = xr.where(pre_lr < 0.5, np.nan, ds_uv_lr)
 # resample to have less number of arrows
 lat_req = np.array(ds_uv_nov.lat)
 lat_req = lat_req[lat_req >= -35]
@@ -183,7 +172,6 @@ ds_uv_dec = ds_uv.sel(time = ds_uv.time.dt.month.isin([12]))
 ds_uv_dec.compute()
 ds_uv_dec = ds_uv_dec.groupby("time.year").mean()
 ds_uv_dec = ds_uv_dec.mean(dim = ["year"])
-#ds_uv_lr = xr.where(pre_lr < 0.5, np.nan, ds_uv_lr)
 # resample to have less number of arrows
 lat_req = np.array(ds_uv_dec.lat)
 lat_req = lat_req[lat_req >= -35]
@@ -198,10 +186,7 @@ figure = mp.pyplot.figure(figsize = (6,6))
 figaxi = figure.add_subplot(1, 1, 1, 
                             projection = ca.crs.Geostationary(central_longitude = 48))
 figaxi.set_global()
-#figaxi.set_extent(-60, 60, -)
-#figaxi.stock_img()
 figaxi.add_feature(ca.feature.LAND, edgecolor='black', alpha = 1.0, zorder =1)
-#figaxi.add_feature(ca.feature.NaturalEarthFeature('physical', 'land', scale='50m'))
 figaxi.add_feature(ca.feature.OCEAN, zorder = 0)
 figaxi.coastlines(zorder = 2)
 figaxi.add_feature(ca.feature.BORDERS, zorder = 1, linestyle = "--", color = "black",
@@ -227,7 +212,6 @@ shp_q50_mar.plot(ax = figaxi,
               facecolor = "None",
               edgecolor = "red",
               linewidth = 0.75,
-              #linestyle = "dashed",
               zorder = 4)
 
 quiver = ds_uv_mar.plot.quiver(ax = figaxi,
@@ -244,16 +228,12 @@ mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2",
                   )
 
 #%% April
-#pre_apr_plot = xr.where(pre_apr < 0.1, np.nan, pre_apr)
 pre_apr_plot = xr.where(q95_mask_apr == 1.0, pre_apr, np.nan)
 figure = mp.pyplot.figure(figsize = (6,6))
 figaxi = figure.add_subplot(1, 1, 1, 
                             projection = ca.crs.Geostationary(central_longitude = 48))
 figaxi.set_global()
-#figaxi.set_extent(-60, 60, -)
-#figaxi.stock_img()
 figaxi.add_feature(ca.feature.LAND, edgecolor='black', alpha = 1.0, zorder =1)
-#figaxi.add_feature(ca.feature.NaturalEarthFeature('physical', 'land', scale='50m'))
 figaxi.add_feature(ca.feature.OCEAN, zorder = 0)
 figaxi.coastlines(zorder = 2)
 figaxi.add_feature(ca.feature.BORDERS, zorder = 1, linestyle = "--", color = "black",
@@ -279,7 +259,6 @@ shp_q50_apr.plot(ax = figaxi,
               facecolor = "None",
               edgecolor = "red",
               linewidth = 0.75,
-              #linestyle = "dashed",
               zorder = 4)
 
 quiver = ds_uv_apr.plot.quiver(ax = figaxi,
@@ -287,7 +266,6 @@ quiver = ds_uv_apr.plot.quiver(ax = figaxi,
                      transform = ca.crs.PlateCarree(),
                      scale = 170, zorder = 5, alpha = 0.7)
 mp.pyplot.quiverkey(quiver, 0.1, 0.1, 6.0, '6.0 m/s' ,labelpos = 'S')
-#figure.patch.set_alpha(0)
 mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2", 
                                "Figure_3_Source_Region_Apr.png"), 
                   bbox_inches = "tight",
@@ -296,16 +274,13 @@ mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2",
                   )
 
 #%% May
-#pre_may_plot = xr.where(pre_may < 0.1, np.nan, pre_may)
 pre_may_plot = xr.where(q95_mask_may == 1.0, pre_may, np.nan)
 figure = mp.pyplot.figure(figsize = (6,6))
 figaxi = figure.add_subplot(1, 1, 1, 
                             projection = ca.crs.Geostationary(central_longitude = 48))
 figaxi.set_global()
-#figaxi.set_extent(-60, 60, -)
-#figaxi.stock_img()
+
 figaxi.add_feature(ca.feature.LAND, edgecolor='black', alpha = 1.0, zorder =1)
-#figaxi.add_feature(ca.feature.NaturalEarthFeature('physical', 'land', scale='50m'))
 figaxi.add_feature(ca.feature.OCEAN, zorder = 0)
 figaxi.coastlines(zorder = 2)
 figaxi.add_feature(ca.feature.BORDERS, zorder = 1, linestyle = "--", color = "black",
@@ -331,7 +306,6 @@ shp_q50_may.plot(ax = figaxi,
               facecolor = "None",
               edgecolor = "red",
               linewidth = 0.75,
-              #linestyle = "dashed",
               zorder = 4)
 
 quiver = ds_uv_may.plot.quiver(ax = figaxi,
@@ -339,7 +313,6 @@ quiver = ds_uv_may.plot.quiver(ax = figaxi,
                      transform = ca.crs.PlateCarree(),
                      scale = 170, zorder = 5, alpha = 0.7)
 mp.pyplot.quiverkey(quiver, 0.1, 0.1, 6.0, '6.0 m/s' ,labelpos = 'S')
-#figure.patch.set_alpha(0)
 mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2", 
                                "Figure_3_Source_Region_May.png"), 
                   bbox_inches = "tight",
@@ -348,16 +321,12 @@ mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2",
                   )
 
 #%% Oct
-#pre_oct_plot = xr.where(pre_oct < 0.1, np.nan, pre_oct)
 pre_oct_plot = xr.where(q95_mask_oct == 1.0, pre_oct, np.nan)
 figure = mp.pyplot.figure(figsize = (6,6))
 figaxi = figure.add_subplot(1, 1, 1, 
                             projection = ca.crs.Geostationary(central_longitude = 48))
 figaxi.set_global()
-#figaxi.set_extent(-60, 60, -)
-#figaxi.stock_img()
 figaxi.add_feature(ca.feature.LAND, edgecolor='black', alpha = 1.0, zorder =1)
-#figaxi.add_feature(ca.feature.NaturalEarthFeature('physical', 'land', scale='50m'))
 figaxi.add_feature(ca.feature.OCEAN, zorder = 0)
 figaxi.coastlines(zorder = 2)
 figaxi.add_feature(ca.feature.BORDERS, zorder = 1, linestyle = "--", color = "black",
@@ -383,7 +352,6 @@ shp_q50_oct.plot(ax = figaxi,
               facecolor = "None",
               edgecolor = "red",
               linewidth = 0.75,
-              #linestyle = "dashed",
               zorder = 4)
 
 quiver = ds_uv_oct.plot.quiver(ax = figaxi,
@@ -391,7 +359,6 @@ quiver = ds_uv_oct.plot.quiver(ax = figaxi,
                      transform = ca.crs.PlateCarree(),
                      scale = 170, zorder = 5, alpha = 0.7)
 mp.pyplot.quiverkey(quiver, 0.1, 0.1, 6.0, '6.0 m/s' ,labelpos = 'S')
-#figure.patch.set_alpha(0)
 mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2", 
                                "Figure_3_Source_Region_Oct.png"), 
                   bbox_inches = "tight",
@@ -400,16 +367,12 @@ mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2",
                   )
 
 #%% Nov
-#pre_nov_plot = xr.where(pre_nov < 0.1, np.nan, pre_nov)
 pre_nov_plot = xr.where(q95_mask_nov == 1.0, pre_nov, np.nan)
 figure = mp.pyplot.figure(figsize = (6,6))
 figaxi = figure.add_subplot(1, 1, 1, 
                             projection = ca.crs.Geostationary(central_longitude = 48))
 figaxi.set_global()
-#figaxi.set_extent(-60, 60, -)
-#figaxi.stock_img()
 figaxi.add_feature(ca.feature.LAND, edgecolor='black', alpha = 1.0, zorder =1)
-#figaxi.add_feature(ca.feature.NaturalEarthFeature('physical', 'land', scale='50m'))
 figaxi.add_feature(ca.feature.OCEAN, zorder = 0)
 figaxi.coastlines(zorder = 2)
 figaxi.add_feature(ca.feature.BORDERS, zorder = 1, linestyle = "--", color = "black",
@@ -435,7 +398,6 @@ shp_q50_nov.plot(ax = figaxi,
               facecolor = "None",
               edgecolor = "red",
               linewidth = 0.75,
-              #linestyle = "dashed",
               zorder = 4)
 
 quiver = ds_uv_nov.plot.quiver(ax = figaxi,
@@ -443,7 +405,6 @@ quiver = ds_uv_nov.plot.quiver(ax = figaxi,
                      transform = ca.crs.PlateCarree(),
                      scale = 170, zorder = 5, alpha = 0.7)
 mp.pyplot.quiverkey(quiver, 0.1, 0.1, 6.0, '6.0 m/s' ,labelpos = 'S')
-#figure.patch.set_alpha(0)
 mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2", 
                                "Figure_3_Source_Region_Nov.png"), 
                   bbox_inches = "tight",
@@ -452,16 +413,12 @@ mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2",
                   )
 
 #%% Dec
-#pre_dec_plot = xr.where(pre_dec < 0.1, np.nan, pre_dec)
 pre_dec_plot = xr.where(q95_mask_dec == 1.0, pre_dec, np.nan)
 figure = mp.pyplot.figure(figsize = (6,6))
 figaxi = figure.add_subplot(1, 1, 1, 
                             projection = ca.crs.Geostationary(central_longitude = 48))
 figaxi.set_global()
-#figaxi.set_extent(-60, 60, -)
-#figaxi.stock_img()
 figaxi.add_feature(ca.feature.LAND, edgecolor='black', alpha = 1.0, zorder =1)
-#figaxi.add_feature(ca.feature.NaturalEarthFeature('physical', 'land', scale='50m'))
 figaxi.add_feature(ca.feature.OCEAN, zorder = 0)
 figaxi.coastlines(zorder = 2)
 figaxi.add_feature(ca.feature.BORDERS, zorder = 1, linestyle = "--", color = "black",
@@ -487,7 +444,6 @@ shp_q50_dec.plot(ax = figaxi,
               facecolor = "None",
               edgecolor = "red",
               linewidth = 0.75,
-              #linestyle = "dashed",
               zorder = 4)
 
 quiver = ds_uv_dec.plot.quiver(ax = figaxi,
@@ -495,7 +451,6 @@ quiver = ds_uv_dec.plot.quiver(ax = figaxi,
                      transform = ca.crs.PlateCarree(),
                      scale = 170, zorder = 5, alpha = 0.7)
 mp.pyplot.quiverkey(quiver, 0.1, 0.1, 6.0, '6.0 m/s' ,labelpos = 'S')
-#figure.patch.set_alpha(0)
 mp.pyplot.savefig(os.path.join("/Stor1/horn_of_africa/hoa_paper/figures_v2", 
                                "Figure_3_Source_Region_Dec.png"), 
                   bbox_inches = "tight",
